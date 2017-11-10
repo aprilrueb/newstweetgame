@@ -1,13 +1,74 @@
 import React, { Component } from 'react';
 import './App.css';
+import * as firebase from 'firebase';
 
+var config = {
+  apiKey: "AIzaSyDeSlDSixrOg7qjrm2EgKauwIxIi4tX7Co",
+  authDomain: "april-stackathon.firebaseapp.com",
+  databaseURL: "https://april-stackathon.firebaseio.com",
+  projectId: "april-stackathon",
+  storageBucket: "april-stackathon.appspot.com",
+  messagingSenderId: "964545777027"
+};
+
+firebase.initializeApp(config);
+var db = firebase.database();
+
+function chooseRandomTweet(){
+  return db.ref().child('tweets').orderByChild('rand')
+    .startAt(Math.random())
+    .limitToFirst(1)
+    .once('value')
+    .then(_ => {
+      const oneTweet = _.val()
+      if (oneTweet) return oneTweet[Object.keys(oneTweet)[0]]
+      return chooseRandomTweet()
+    })
+}
+
+// MAIN COMPONENT
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      tweet: null,
+      answer: null,
+      link: null
+    };
+    this.handleClick = this.handleClick.bind(this);
+    this.handleReset = this.handleReset.bind(this);
 
-  componentDidMount(){
-  // fetch from database
+  }
+
+  next = () =>
+    chooseRandomTweet().then(tweet => this.setState({tweet}))
+
+  componentDidMount() {
+    this.next()
+  }
+
+  handleClick() {
+    this.setState({
+      answer: this.state.tweet.brand,
+      link: this.state.tweet.hyperlink
+    })
+  }
+
+  handleReset() {
+    this.next()
+    this.setState({
+      answer: null,
+      link: null
+    })
   }
 
   render() {
+    const tweet = this.state.tweet;
+    const answer = this.state.answer;
+    const link = this.state.link;
+    console.log(tweet)
+    if (!tweet) return null
+
     return (
       <div className="App">
         <div className="App-header">
@@ -23,20 +84,22 @@ class App extends Component {
         </div>
 
         <div className="Tweet">
-          <p>------------------</p>
-          <p>TWEET WILL GO HERE</p>
-          <p>------------------</p>
+          <p>&nbsp;</p>
+          <h3>{tweet.tweet}</h3>
+          <p>&nbsp;</p>
         </div>
 
         <div>
-          <button className="Button">CNN</button>
-          <button className="Button">MSNBC</button>
-          <button className="Button">FOX NEWS</button>
+          <button className="Button" onClick={this.handleClick}>CNN</button>
+          <button className="Button" onClick={this.handleClick}>MSNBC</button>
+          <button className="Button" onClick={this.handleClick}>FOX NEWS</button>
+          <h2>Correct Answer: {answer}</h2>
+          <h4>Original tweet: <a href={link} target="_blank">{link}</a></h4>
         </div>
 
+
         <div>
-          <p>Answer: [After button click, this displays with handle]</p>
-          <p>Source: [After button click, this displays with hyperlink to tweet]</p>
+          <button className="Button-reset" onClick={this.handleReset}>PLAY AGAIN</button>
         </div>
 
         <div className="App-footer">

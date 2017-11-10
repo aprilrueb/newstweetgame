@@ -1,4 +1,3 @@
-// Using NPM's Twitter package: https://www.npmjs.com/package/twitter
 var Twitter = require('twitter');
 var {consumer_key, consumer_secret, access_token_key, access_token_secret} = require('../data/twitter_config');
 
@@ -38,17 +37,11 @@ var cnnRequest = client.get('statuses/user_timeline', cnn, (error, tweets, respo
             return
           } else {
             return {
-          brand: '@CNN',
-          tweet: tweet.text,
-          hyperlink: 'twitter.com/CNN/status/' + tweet.id_str
-        }
-      }
-    })
-        .then((transaction) => {
-          if(transaction.committed) {
-            return db.ref('tweets_count').transaction(current => {
-              return (current || 0) + 1;
-            })
+              brand: '@CNN',
+              tweet: tweet.text,
+              rand: Math.random(),
+              hyperlink: 'https://twitter.com/CNN/status/' + tweet.id_str
+            }
           }
         })
       }
@@ -69,17 +62,11 @@ var msnbcRequest = client.get('statuses/user_timeline', msnbc, (error, tweets, r
             return
           } else {
             return {
-          brand: '@MSNBC',
-          tweet: tweet.text,
-          hyperlink: 'twitter.com/MSNBC/status/' + tweet.id_str
-        }
-      }
-    })
-        .then((transaction) => {
-          if(transaction.committed) {
-            return db.ref('tweets_count').transaction(current => {
-              return (current || 0) + 1;
-            })
+              brand: '@MSNBC',
+              tweet: tweet.text,
+              rand: Math.random(),
+              hyperlink: 'https://twitter.com/MSNBC/status/' + tweet.id_str
+            }
           }
         })
       }
@@ -100,17 +87,11 @@ var foxRequest = client.get('statuses/user_timeline', fox, (error, tweets, respo
             return
           } else {
             return {
-          brand: '@FoxNews',
-          tweet: tweet.text,
-          hyperlink: 'twitter.com/FoxNews/status/' + tweet.id_str
-        }
-      }
-    })
-        .then((transaction) => {
-          if(transaction.committed) {
-            return db.ref('tweets_count').transaction(current => {
-              return (current || 0) + 1;
-            })
+              brand: '@FoxNews',
+              tweet: tweet.text,
+              rand: Math.random(),
+              hyperlink: 'https://twitter.com/FoxNews/status/' + tweet.id_str
+            }
           }
         })
       }
@@ -120,4 +101,4 @@ var foxRequest = client.get('statuses/user_timeline', fox, (error, tweets, respo
   }
 })
 
-module.exports = {admin, serviceAccount, db, cnnRequest, msnbcRequest, foxRequest};
+module.exports = {cnnRequest, msnbcRequest, foxRequest};
