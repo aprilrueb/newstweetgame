@@ -31,13 +31,13 @@ var cnnRequest = client.get('statuses/user_timeline', cnn, (error, tweets, respo
   if (!error) {
     tweets.filter((tweet) => {
       let hostExists = cnnBanned.filter((name) => tweet.text.toLowerCase().indexOf(name) > -1)
-      if(!hostExists.length && !tweet.retweeted){
-        db.ref('tweets').child(tweet.id).transaction(current => {
+      if(!hostExists.length && !tweet.retweeted_status){
+        db.ref('tweets').child(tweet.id_str).transaction(current => {
           if (current) {
             return
           } else {
             return {
-              brand: '@CNN',
+              brand: 'CNN',
               tweet: tweet.text,
               rand: Math.random(),
               hyperlink: 'https://twitter.com/CNN/status/' + tweet.id_str
@@ -56,13 +56,13 @@ var msnbcRequest = client.get('statuses/user_timeline', msnbc, (error, tweets, r
   if (!error) {
     tweets.filter((tweet) => {
       let hostExists = msnbcBanned.filter((name) => tweet.text.toLowerCase().indexOf(name) > -1)
-      if(!hostExists.length && !tweet.retweeted){
-        db.ref('tweets').child(tweet.id).transaction(current => {
+      if(!hostExists.length && !tweet.retweeted_status){
+        db.ref('tweets').child(tweet.id_str).transaction(current => {
           if (current) {
             return
           } else {
             return {
-              brand: '@MSNBC',
+              brand: 'MSNBC',
               tweet: tweet.text,
               rand: Math.random(),
               hyperlink: 'https://twitter.com/MSNBC/status/' + tweet.id_str
@@ -80,14 +80,15 @@ var msnbcRequest = client.get('statuses/user_timeline', msnbc, (error, tweets, r
 var foxRequest = client.get('statuses/user_timeline', fox, (error, tweets, response) => {
   if (!error) {
     tweets.filter((tweet) => {
+      console.log(!tweet.retweeted_status)
       let hostExists = foxBanned.filter((name) => tweet.text.toLowerCase().indexOf(name) > -1)
-      if(!hostExists.length && !tweet.retweeted){
-        db.ref('tweets').child(tweet.id).transaction(current => {
+      if(!hostExists.length && !tweet.retweeted_status){
+        db.ref('tweets').child(tweet.id_str).transaction(current => {
           if (current) {
             return
           } else {
             return {
-              brand: '@FoxNews',
+              brand: 'FOX NEWS',
               tweet: tweet.text,
               rand: Math.random(),
               hyperlink: 'https://twitter.com/FoxNews/status/' + tweet.id_str

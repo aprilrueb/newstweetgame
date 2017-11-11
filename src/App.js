@@ -23,7 +23,8 @@ function chooseRandomTweet(){
       const oneTweet = _.val()
       if (oneTweet) return oneTweet[Object.keys(oneTweet)[0]]
       return chooseRandomTweet()
-    })
+    }
+  )
 }
 
 // MAIN COMPONENT
@@ -33,11 +34,14 @@ class App extends Component {
     this.state = {
       tweet: null,
       answer: null,
-      link: null
+      link: null,
+      counter: 10,
+      score: null,
+      isResetButtonDisabled: true,
+      isBrandButtonDisabled: false
     };
     this.handleClick = this.handleClick.bind(this);
     this.handleReset = this.handleReset.bind(this);
-
   }
 
   next = () =>
@@ -49,8 +53,12 @@ class App extends Component {
 
   handleClick() {
     this.setState({
-      answer: this.state.tweet.brand,
-      link: this.state.tweet.hyperlink
+      answer: "Answer: " + this.state.tweet.brand,
+      link: this.state.tweet.hyperlink,
+      counter: this.state.counter+1,
+      score: this.state.score,
+      isResetButtonDisabled: false,
+      isBrandButtonDisabled: true
     })
   }
 
@@ -58,7 +66,10 @@ class App extends Component {
     this.next()
     this.setState({
       answer: null,
-      link: null
+      link: null,
+      score: this.state.score+1,
+      isResetButtonDisabled: true,
+      isBrandButtonDisabled: false
     })
   }
 
@@ -66,7 +77,7 @@ class App extends Component {
     const tweet = this.state.tweet;
     const answer = this.state.answer;
     const link = this.state.link;
-    console.log(tweet)
+    const score = Math.floor(this.state.score/this.state.counter*100)+"%";
     if (!tweet) return null
 
     return (
@@ -84,22 +95,20 @@ class App extends Component {
         </div>
 
         <div className="Tweet">
-          <p>&nbsp;</p>
           <h3>{tweet.tweet}</h3>
-          <p>&nbsp;</p>
         </div>
 
         <div>
-          <button className="Button" onClick={this.handleClick}>CNN</button>
-          <button className="Button" onClick={this.handleClick}>MSNBC</button>
-          <button className="Button" onClick={this.handleClick}>FOX NEWS</button>
-          <h2>Correct Answer: {answer}</h2>
-          <h4>Original tweet: <a href={link} target="_blank">{link}</a></h4>
+          <button className="Button" onClick={this.handleClick} disabled={this.state.isBrandButtonDisabled}>CNN</button>
+          <button className="Button" onClick={this.handleClick} disabled={this.state.isBrandButtonDisabled}>MSNBC</button>
+          <button className="Button" onClick={this.handleClick} disabled={this.state.isBrandButtonDisabled}>FOX NEWS</button>
+          <h2>{answer}&nbsp;</h2>
+          <h3>Score: {score}</h3>
+          <h4>Source: <a href={link} target="_blank">ORIGINAL TWEET</a></h4>
         </div>
 
-
         <div>
-          <button className="Button-reset" onClick={this.handleReset}>PLAY AGAIN</button>
+          <button className="Button-reset" onClick={this.handleReset} disabled={this.state.isResetButtonDisabled}>SEE A NEW TWEET</button>
         </div>
 
         <div className="App-footer">
