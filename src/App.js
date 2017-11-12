@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './App.css';
 import * as firebase from 'firebase';
 
 var config = {
@@ -14,6 +13,7 @@ var config = {
 firebase.initializeApp(config);
 var db = firebase.database();
 
+var seenTweets = [];
 function chooseRandomTweet(){
   return db.ref().child('tweets').orderByChild('rand')
     .startAt(Math.random())
@@ -21,7 +21,10 @@ function chooseRandomTweet(){
     .once('value')
     .then(_ => {
       const oneTweet = _.val()
-      if (oneTweet) return oneTweet[Object.keys(oneTweet)[0]]
+      if (oneTweet && seenTweets.indexOf(Object.keys(oneTweet)[0]) === -1){
+        seenTweets.push(Object.keys(oneTweet)[0])
+        return oneTweet[Object.keys(oneTweet)[0]]
+      }
       return chooseRandomTweet()
     }
   )
@@ -32,18 +35,19 @@ function checkTweet(tweet){
     tweet = tweet.slice(0, tweet.indexOf('http')-1);
   }
   if (tweet.indexOf('&amp;') > -1){
-    let pre = tweet.slice(0, tweet.indexOf('&amp;'));
-    let post = tweet.slice(tweet.indexOf('&amp;')+5)
+    const pre = tweet.slice(0, tweet.indexOf('&amp;'));
+    const post = tweet.slice(tweet.indexOf('&amp;')+5)
     tweet = pre + '&' + post;
   }
   return tweet;
 }
 
-function checkForAmpersand(tweet){
-  if (tweet.indexOf('http') > -1){
-    tweet = tweet.slice(0, tweet.indexOf('http')-1);
+function scoreCheck(value) {
+  if (isNaN(value)){
+    return "";
+  } else {
+    return value+"%";
   }
-  return tweet;
 }
 
 // MAIN COMPONENT
@@ -54,12 +58,14 @@ class App extends Component {
       tweet: null,
       answer: null,
       link: null,
-      counter: 10,
-      score: null,
+      counter: 0,
+      score: 0,
       isResetButtonDisabled: true,
       isBrandButtonDisabled: false
     };
-    this.handleClick = this.handleClick.bind(this);
+    this.handleCNNClick = this.handleCNNClick.bind(this);
+    this.handleFOXClick = this.handleFOXClick.bind(this);
+    this.handleMSNBCClick = this.handleMSNBCClick.bind(this);
     this.handleReset = this.handleReset.bind(this);
   }
 
@@ -70,12 +76,40 @@ class App extends Component {
     this.next()
   }
 
-  handleClick() {
+  handleCNNClick() {
+    this.state.tweet.brand === "CNN" ?
+      this.setState({score: this.state.score+1}) :
+      this.setState({score: this.state.score})
     this.setState({
       answer: "Answer: " + this.state.tweet.brand,
       link: this.state.tweet.hyperlink,
       counter: this.state.counter+1,
-      score: this.state.score,
+      isResetButtonDisabled: false,
+      isBrandButtonDisabled: true
+    })
+  }
+
+  handleFOXClick() {
+    this.state.tweet.brand === "FOX NEWS" ?
+      this.setState({score: this.state.score+1}) :
+      this.setState({score: this.state.score})
+    this.setState({
+      answer: "Answer: " + this.state.tweet.brand,
+      link: this.state.tweet.hyperlink,
+      counter: this.state.counter+1,
+      isResetButtonDisabled: false,
+      isBrandButtonDisabled: true
+    })
+  }
+
+  handleMSNBCClick() {
+    this.state.tweet.brand === "MSNBC" ?
+      this.setState({score: this.state.score+1}) :
+      this.setState({score: this.state.score})
+    this.setState({
+      answer: "Answer: " + this.state.tweet.brand,
+      link: this.state.tweet.hyperlink,
+      counter: this.state.counter+1,
       isResetButtonDisabled: false,
       isBrandButtonDisabled: true
     })
@@ -86,7 +120,6 @@ class App extends Component {
     this.setState({
       answer: null,
       link: null,
-      score: this.state.score+1,
       isResetButtonDisabled: true,
       isBrandButtonDisabled: false
     })
@@ -96,7 +129,8 @@ class App extends Component {
     const tweet = this.state.tweet;
     const answer = this.state.answer;
     const link = this.state.link;
-    const score = Math.floor(this.state.score/this.state.counter*100)+"%";
+    const score = Math.floor(this.state.score/this.state.counter*100);
+
     if (!tweet) return null
 
     return (
@@ -104,7 +138,7 @@ class App extends Component {
         <div className="App-header">
           <header>
             <h1 className="App-title">
-              WHO TWEETED THAT NEWS
+              THE NEWS TWEET GAME
             </h1>
           </header>
         </div>
@@ -113,21 +147,24 @@ class App extends Component {
           <p>Below is a tweet from CNN, MSNBC, or Fox News. Can you identify who sent it?</p>
         </div>
 
-        <div className="Tweet">
+        <div className="Padding">
           <h3>{checkTweet(tweet.tweet)}</h3>
         </div>
 
         <div>
-          <button className="Button" onClick={this.handleClick} disabled={this.state.isBrandButtonDisabled}>CNN</button>
-          <button className="Button" onClick={this.handleClick} disabled={this.state.isBrandButtonDisabled}>MSNBC</button>
-          <button className="Button" onClick={this.handleClick} disabled={this.state.isBrandButtonDisabled}>FOX NEWS</button>
+          <button id="CNN" className="Button" onClick={this.handleCNNClick} disabled={this.state.isBrandButtonDisabled}>CNN</button>
+          <button id="MSNBC" className="Button" onClick={this.handleMSNBCClick} disabled={this.state.isBrandButtonDisabled}>MSNBC</button>
+          <button id="FOX" className="Button" onClick={this.handleFOXClick} disabled={this.state.isBrandButtonDisabled}>FOX NEWS</button>
           <h2>{answer}&nbsp;</h2>
-          <h3>Score: {score}</h3>
-          <h4>Source: <a href={link} target="_blank">ORIGINAL TWEET</a></h4>
         </div>
 
         <div>
           <button className="Button-reset" onClick={this.handleReset} disabled={this.state.isResetButtonDisabled}>SEE A NEW TWEET</button>
+        </div>
+
+        <div className="Main">
+          <p>Score: {scoreCheck(score)}</p>
+          <p>Source: <a href={link} target="_blank">Original Tweet</a></p>
         </div>
 
       </div>

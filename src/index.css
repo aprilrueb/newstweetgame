@@ -1,11 +1,102 @@
+.App {
+  text-align: center;
+}
+
+.App-header {
+  background-color: #222;
+  height: 80px;
+  padding: 20px;
+  color: white;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+.App-title {
+  font-size: 2.0em;
+}
+
 body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+  background-color: rgb(240, 240, 240);
+}
+
+.Button {
+  border: none;
+  color: white;
+  width: 200px;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 15px 32px;
+  text-align: center;
+  display: inline-block;
+  font-size: 20px;
+  margin: 4px 2px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition-duration: 0.4s;
+}
+
+.Button:disabled {
+  color: #999;
+  background: #DDD;
+  cursor: default;
+}
+
+.Button-reset {
+  border: none;
+  color: white;
+  width: 209px;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 15px 32px;
+  text-align: center;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition-duration: 0.4s;
+}
+
+.Button-reset:disabled {
+  color: #999;
+  background: #DDD;
+  cursor: default;
+}
+
+.Button:hover:enabled {
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+.Button-reset:hover:enabled {
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+.Main {
+  font-size: large;
+}
+
+.Padding {
+  padding-right: 10px;
+  padding-left: 10px;
 }
 
 .Tweet-button {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+@media screen and (max-width: 257px) {
+  .App-title {
+    font-size: 1.5rem;
+  }
+}
+
+@media screen and (max-width: 167px) {
+  .App-title {
+    font-size: 1.0rem;
+  }
 }
