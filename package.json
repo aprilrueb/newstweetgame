@@ -1,11 +1,12 @@
 {
   "name": "stackathon",
   "version": "0.1.0",
-  "homepage" : "https://aprilrueb.github.io/stackathon/",
+  "homepage": "https://aprilrueb.github.io/stackathon/",
   "private": true,
   "dependencies": {
     "firebase": "^4.6.2",
     "firebase-admin": "^5.4.3",
+    "gh-pages": "^1.0.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-route": "^1.0.3",
@@ -15,6 +16,8 @@
     "twitter": "^1.7.1"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
