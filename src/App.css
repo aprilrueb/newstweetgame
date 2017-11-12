@@ -58,6 +58,7 @@ body {
 .Button:disabled {
   color: #999;
   background: #DDD;
+  cursor: default;
 }
 
 .Button-reset {
@@ -78,6 +79,7 @@ body {
 .Button-reset:disabled {
   color: #999;
   background: #DDD;
+  cursor: default;
 }
 
 .Button:hover:enabled {

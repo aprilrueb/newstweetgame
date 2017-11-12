@@ -27,6 +27,25 @@ function chooseRandomTweet(){
   )
 }
 
+function checkTweet(tweet){
+  if (tweet.indexOf('http') > -1){
+    tweet = tweet.slice(0, tweet.indexOf('http')-1);
+  }
+  if (tweet.indexOf('&amp;') > -1){
+    let pre = tweet.slice(0, tweet.indexOf('&amp;'));
+    let post = tweet.slice(tweet.indexOf('&amp;')+5)
+    tweet = pre + '&' + post;
+  }
+  return tweet;
+}
+
+function checkForAmpersand(tweet){
+  if (tweet.indexOf('http') > -1){
+    tweet = tweet.slice(0, tweet.indexOf('http')-1);
+  }
+  return tweet;
+}
+
 // MAIN COMPONENT
 class App extends Component {
   constructor(props) {
@@ -85,7 +104,7 @@ class App extends Component {
         <div className="App-header">
           <header>
             <h1 className="App-title">
-              GUESS WHO TWEETED THAT NEWS
+              WHO TWEETED THAT NEWS
             </h1>
           </header>
         </div>
@@ -95,7 +114,7 @@ class App extends Component {
         </div>
 
         <div className="Tweet">
-          <h3>{tweet.tweet}</h3>
+          <h3>{checkTweet(tweet.tweet)}</h3>
         </div>
 
         <div>
@@ -111,12 +130,6 @@ class App extends Component {
           <button className="Button-reset" onClick={this.handleReset} disabled={this.state.isResetButtonDisabled}>SEE A NEW TWEET</button>
         </div>
 
-        <div className="App-footer">
-          <footer>
-            About me: <a href="http://aprilrueb.com/" target="blank">aprilrueb</a> •
-            About my code: <a href="https://github.com/aprilrueb" target="blank">GitHub</a>
-          </footer>
-        </div>
       </div>
     );
   }
