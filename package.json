@@ -1,6 +1,7 @@
 {
   "name": "stackathon",
   "version": "0.1.0",
+  "homepage" : "http://aprilrueb.github.io/stackathon",
   "private": true,
   "dependencies": {
     "firebase": "^4.6.2",
